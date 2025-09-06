@@ -5,11 +5,6 @@ export const metadata = {
   description: "Sistema Del Plata, login para ingresar usuario",
 };
 
-const ingresar = async (e) => {
-  e.preventDefault();
-  console.log("perfecto");
-};
-
 export default function Page() {
   return <LoginForm></LoginForm>;
 }
