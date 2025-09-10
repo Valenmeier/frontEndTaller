@@ -1,42 +1,110 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import loginActions from "./actions";
-import { redirect } from "next/navigation";
+import styles from "./loginPage.module.css";
+import StatusToast from "@/components/dialogs/statusToast/statusToast"; 
 
 export default function LoginForm() {
+  const router = useRouter();
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
-  const [mensaje, setMensaje] = useState("");
+  const [pending, startTransition] = useTransition();
 
-  const handleSubmit = async (e) => {
+  const [toast, setToast] = useState({
+    open: false,
+    type: "error",
+    title: "",
+    message: "",
+  });
+  const closeToast = () => setToast(t => ({ ...t, open: false }));
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const probarInicio = await loginActions(usuario, contrasena);
+    startTransition(async () => {
+      try {
+        if (!usuario.trim() || !contrasena.trim()) {
+          setToast({
+            open: true,
+            type: "error",
+            title: "Datos incompletos",
+            message: "Ingresá usuario y contraseña.",
+          });
+          return;
+        }
 
-    switch (probarInicio) {
-      case "ADMIN":
-        redirect("/admin/usuarios");
-      case "ENCARGADO":
-        redirect("/vpp");
+        const rol = await loginActions(usuario, contrasena);
 
-      case "CAJERO":
-        redirect("/procesos");
-      default:
-        setMensaje(probarInicio);
-    }
+        switch (rol) {
+          case "ADMIN":
+            router.push("/admin/usuarios");
+            return;
+          case "ENCARGADO":
+            router.push("/vpp");
+            return;
+          case "CAJERO":
+            router.push("/procesos");
+            return;
+          default:
+            setToast({
+              open: true,
+              type: "error",
+              title: "No se pudo iniciar sesión",
+              message: String(rol || "Usuario o contraseña inválidos"),
+            });
+        }
+      } catch (err) {
+        setToast({
+          open: true,
+          type: "error",
+          title: "Error",
+          message: err?.message || "Ocurrió un error. Probá de nuevo.",
+        });
+      }
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input value={usuario} onChange={(e) => setUsuario(e.target.value)} />
-      <input
-        type="password"
-        value={contrasena}
-        onChange={(e) => setContrasena(e.target.value)}
-      />
-      <button type="submit">Ingresar</button>
-      {mensaje && <p>{mensaje}</p>}
-    </form>
+    <>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <Image
+          src="/logodelplata.png"
+          width={400}
+          height={100}
+          alt="Logo Del Plata"
+          className="imagen"
+        />
+
+        <div>
+          <label>
+            <h1>Usuario:</h1>
+            <input
+              className={styles.input}
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+            />
+          </label>
+
+          <label>
+            <h2>Contraseña:</h2>
+            <input
+              className={styles.input}
+              type="password"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <button type="submit" disabled={pending}>
+          {pending ? "Ingresando..." : "Ingresar"}
+        </button>
+      </form>
+
+      <StatusToast {...toast} onClose={closeToast} />
+    </>
   );
 }

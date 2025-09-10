@@ -1,41 +1,27 @@
 import TokenAutoLogout from "@/hooks/TokenLogout";
-import validarToken from "../../security/validarToken.js";
-import { getProductos } from "./actions.js";
-import Product from "./Product/Product.js";
-import PollRefresher from "../refreshers/PollRefresher.js";
-import LogoutButton from "../Buttons/Logout.js";
-import AddProduct from "./Product/AddProduct.js";
+import validarToken from "../../security/validarToken";
+import { getProductos } from "./actions";
+import LogoutButton from "../Buttons/Logout";
+import ProductsClient from "./ProductClient/ProductClient";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export default async function ProductPage() {
   const { ok, payload, exp } = await validarToken();
   if (!ok || payload.rol !== "ADMIN") return <h1>No autorizado</h1>;
 
+  // Traemos TODO una sola vez (sin filtros de back)
   const productos = await getProductos();
 
   return (
     <>
       <TokenAutoLogout exp={exp} />
-      <PollRefresher intervalMs={15000} />
+      <h1>Productos</h1>
+      <Link href="/admin/usuarios">Ir a usuarios</Link>
+      <LogoutButton nombre={payload.user} />
 
-      <div>
-        <h1>Productos:</h1>
-        <a href="usuarios">Ir a usuarios</a>
-        <LogoutButton nombre={payload.user}></LogoutButton>
-      </div>
-      {!productos || productos.length === 0 ? (
-        <h1>No hay empleados</h1>
-      ) : (
-        productos.map((p) => (
-          <Product
-            key={p.id ?? p.nombre}
-            id={p.id}
-            nombre={p.nombre}
-            price={p.precioKg}
-            seccion={p.seccion}
-          />
-        ))
-      )}
-      <AddProduct></AddProduct>
+      <ProductsClient initialProductos={productos} />
     </>
   );
 }

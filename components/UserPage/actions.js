@@ -16,7 +16,7 @@ export async function getUsuarios() {
   const res = await fetch(`${BASE}/usuarios`, {
     headers,
     cache: "no-store",
-    next: { tags: ["usuarios"] }, 
+    next: { tags: ["usuarios"] },
   });
   if (!res.ok) throw new Error("Error al obtener usuarios");
   return res.json();
@@ -29,7 +29,11 @@ export async function crearUsuario(data) {
     headers: { ...headers, "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("No se pudo crear usuario");
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    if (res.status === 409) throw new Error("Usuario duplicado");
+    throw new Error(txt || "No se pudo crear usuario");
+  }
   revalidateTag("usuarios");
   return res.json();
 }
@@ -41,7 +45,11 @@ export async function actualizarUsuario(id, data) {
     headers: { ...headers, "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("No se pudo actualizar usuario");
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    if (res.status === 409) throw new Error("Usuario duplicado");
+    throw new Error(txt || "No se pudo actualizar usuario");
+  }
   revalidateTag("usuarios");
   return res.json();
 }

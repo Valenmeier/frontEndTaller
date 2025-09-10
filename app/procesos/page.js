@@ -1,7 +1,8 @@
+import ProcesosPage from "@/components/Process/ProcessPage";
 export const metadata = {
   title: "TP Taller-Procesos",
   description: "Sistema Del Plata, login para ingresar usuario",
 };
 export default function Page() {
-  return <h1>procesos</h1>;
+  return <ProcesosPage></ProcesosPage>;
 }

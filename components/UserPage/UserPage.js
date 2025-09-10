@@ -1,10 +1,11 @@
 import TokenAutoLogout from "@/hooks/TokenLogout";
-import validarToken from "../../security/validarToken.js";
-import { getUsuarios } from "./actions.js";
-import User from "./User/User.js";
-import PollRefresher from "../refreshers/PollRefresher.js";
-import LogoutButton from "../Buttons/Logout.js";
-import AddUser from "./User/AddUser.js";
+import validarToken from "../../security/validarToken";
+import { getUsuarios } from "./actions";
+import LogoutButton from "../Buttons/Logout";
+import UsersClient from "./UserClient/UserClient";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export default async function UserPage() {
   const { ok, payload, exp } = await validarToken();
@@ -15,26 +16,10 @@ export default async function UserPage() {
   return (
     <>
       <TokenAutoLogout exp={exp} />
-      <PollRefresher intervalMs={15000} />
-
-      <div>
-        <h1>Usuarios:</h1>
-        <a href="productos">Ir a productos</a>
-        <LogoutButton nombre={payload.user}></LogoutButton>
-      </div>
-      {!usuarios || usuarios.length === 0 ? (
-        <h1>No hay empleados</h1>
-      ) : (
-        usuarios.map((u) => (
-          <User
-            key={u.id ?? u.usuario}
-            id={u.id}
-            nombre={u.usuario}
-            rol={u.rol}
-          />
-        ))
-      )}
-      <AddUser></AddUser>
+      <h1>Usuarios</h1>
+      <Link href="/admin/productos">Ir a productos</Link>
+      <LogoutButton nombre={payload.user} />
+      <UsersClient initialUsuarios={usuarios} />
     </>
   );
 }

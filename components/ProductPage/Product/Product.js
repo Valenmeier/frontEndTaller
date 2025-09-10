@@ -12,12 +12,7 @@ export default function Product({ id, nombre, price, seccion }) {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
-  const [toast, setToast] = useState({
-    open: false,
-    type: "info",
-    title: "",
-    message: "",
-  });
+  const [toast, setToast] = useState({ open: false, type: "info", title: "", message: "" });
   const closeToast = () => setToast((t) => ({ ...t, open: false }));
 
   const confirmDelete = () => {
@@ -25,21 +20,12 @@ export default function Product({ id, nombre, price, seccion }) {
       try {
         await eliminarProducto(id);
         setShowDelete(false);
-        setToast({
-          open: true,
-          type: "success",
-          title: "Eliminado",
-          message: `Se eliminó ${nombre}`,
-        });
+        setToast({ open: true, type: "success", title: "Desactivado", message: `Se desactivó ${nombre}` });
         router.refresh();
       } catch (e) {
         console.error(e);
-        setToast({
-          open: true,
-          type: "error",
-          title: "Error",
-          message: "No se pudo eliminar",
-        });
+        const msg = e?.message || "No se pudo desactivar";
+        setToast({ open: true, type: "error", title: "Error", message: msg });
       }
     });
   };
@@ -49,21 +35,11 @@ export default function Product({ id, nombre, price, seccion }) {
       try {
         await actualizarProducto(id, data);
         setShowEdit(false);
-        setToast({
-          open: true,
-          type: "success",
-          title: "Guardado",
-          message: `Se actualizó el producto: ${data.nombre}`,
-        });
+        setToast({ open: true, type: "success", title: "Guardado", message: `Se actualizó: ${data.nombre}` });
         router.refresh();
       } catch (e) {
         console.error(e);
-        setToast({
-          open: true,
-          type: "error",
-          title: "Error",
-          message: "No se pudo actualizar",
-        });
+        setToast({ open: true, type: "error", title: "Error", message: e?.message || "No se pudo actualizar" });
       }
     });
   };
@@ -72,20 +48,20 @@ export default function Product({ id, nombre, price, seccion }) {
     <div>
       <h3>Producto: {nombre}</h3>
       <h4>Precio: {price}</h4>
-      <h4>Seccion: {seccion}</h4>
+      <h4>Sección: {seccion}</h4>
       <div>
         <button disabled={pending} onClick={() => setShowEdit(true)}>
           {pending && showEdit ? "Guardando..." : "Actualizar"}
         </button>
         <button disabled={pending} onClick={() => setShowDelete(true)}>
-          {pending && showDelete ? "Eliminando..." : "Eliminar"}
+          {pending && showDelete ? "Desactivando..." : "Desactivar"}
         </button>
       </div>
 
       <ConfirmDialog
         open={showDelete}
-        title="Confirmar eliminación"
-        message={`¿Eliminar el producto: ${nombre}?`}
+        title="Confirmar desactivación"
+        message={`¿Desactivar el producto: ${nombre}?`}
         pending={pending}
         onCancel={() => setShowDelete(false)}
         onConfirm={confirmDelete}

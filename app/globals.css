@@ -1,8 +1,11 @@
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+:root {
+  --gradienteTexto: linear-gradient(to right, #3128b4, #4668b1);
+  --colorFondo: #f6f6f6;
 }
 
 html,
@@ -12,25 +15,22 @@ body {
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F6F6F6; 
-  color: #222;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--colorFondo);
+  color: #000;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased; 
+  -webkit-font-smoothing: antialiased;
 }
-
 
 ul,
 ol {
   list-style: none;
 }
 
-
 a {
   text-decoration: none;
   color: inherit;
 }
-
 
 img,
 picture,
@@ -41,28 +41,15 @@ svg {
   display: block;
 }
 
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-  border: none;
-  outline: none;
-  background: none;
-}
-
-
-button {
-  cursor: pointer;
-}
-
-.no-spinner::-webkit-outer-spin-button,
-.no-spinner::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.no-spinner {
-  -moz-appearance: textfield; 
-  appearance: textfield;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  background: var(--gradienteTexto);
+  background-clip: text;
+  color: transparent;
 }
