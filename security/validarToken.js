@@ -9,7 +9,7 @@ const validarToken = async () => {
 
   try {
     const payload = verify(token.value, process.env.JWT_SECRET);
-    return { ok: true, payload };
+    return { ok: true, payload, exp: payload.exp ?? null };
   } catch {
     return { ok: false, payload: null };
   }

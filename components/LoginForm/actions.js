@@ -15,7 +15,11 @@ const loginActions = async (usuario, contrasena) => {
 
     if (res.ok) {
       const cookieStore = await cookies();
-      cookieStore.set("TokenJwt", response.token);
+      cookieStore.set("TokenJwt", response.token, {
+        maxAge: 60 * process.env.JWT_MIN,
+        secure: true,
+        // httpOnly: true,
+      });
       return response.user.rol;
     } else {
       return response.error;

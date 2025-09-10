@@ -1,7 +1,7 @@
 import LoginForm from "@/components/LoginForm/LoginForm.js";
 
 export const metadata = {
-  title: "TP Taller-Login",
+  title: "Del Plata - Login",
   description: "Sistema Del Plata, login para ingresar usuario",
 };
 

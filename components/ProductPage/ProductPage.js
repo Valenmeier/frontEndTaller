@@ -1,16 +1,16 @@
 import TokenAutoLogout from "@/hooks/TokenLogout";
 import validarToken from "../../security/validarToken.js";
-import { getUsuarios } from "./actions.js";
-import User from "./User/User.js";
+import { getProductos } from "./actions.js";
+import Product from "./Product/Product.js";
 import PollRefresher from "../refreshers/PollRefresher.js";
 import LogoutButton from "../Buttons/Logout.js";
-import AddUser from "./User/AddUser.js";
+import AddProduct from "./Product/AddProduct.js";
 
-export default async function UserPage() {
+export default async function ProductPage() {
   const { ok, payload, exp } = await validarToken();
   if (!ok || payload.rol !== "ADMIN") return <h1>No autorizado</h1>;
 
-  const usuarios = await getUsuarios();
+  const productos = await getProductos();
 
   return (
     <>
@@ -18,23 +18,24 @@ export default async function UserPage() {
       <PollRefresher intervalMs={15000} />
 
       <div>
-        <h1>Usuarios:</h1>
-        <a href="productos">Ir a productos</a>
+        <h1>Productos:</h1>
+        <a href="usuarios">Ir a usuarios</a>
         <LogoutButton nombre={payload.user}></LogoutButton>
       </div>
-      {!usuarios || usuarios.length === 0 ? (
+      {!productos || productos.length === 0 ? (
         <h1>No hay empleados</h1>
       ) : (
-        usuarios.map((u) => (
-          <User
-            key={u.id ?? u.usuario}
-            id={u.id}
-            nombre={u.usuario}
-            rol={u.rol}
+        productos.map((p) => (
+          <Product
+            key={p.id ?? p.nombre}
+            id={p.id}
+            nombre={p.nombre}
+            price={p.precioKg}
+            seccion={p.seccion}
           />
         ))
       )}
-      <AddUser></AddUser>
+      <AddProduct></AddProduct>
     </>
   );
 }
