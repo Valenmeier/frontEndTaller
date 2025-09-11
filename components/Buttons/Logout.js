@@ -21,7 +21,7 @@ export default function LogoutButton({ nombre }) {
         <h3 onClick={() => setOpen(true)}>{nombre}</h3>
         <Image
           onClick={() => setOpen(true)}
-          src="/usericon.svg"
+          src="/usuarioicono.svg"
           alt="userMenu"
           width={40}
           height={40}
