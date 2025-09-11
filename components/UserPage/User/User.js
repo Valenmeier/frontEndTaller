@@ -5,6 +5,7 @@ import { eliminarUsuario, actualizarUsuario } from "../actions.js";
 import ConfirmDialog from "@/components/dialogs/confirmDialog/confirmDialog.js";
 import EditUserDialog from "../dialogs/editUserDialog.js";
 import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import style from "./userStyle.module.css";
 
 export default function User({ id, nombre, rol }) {
   const router = useRouter();
@@ -47,7 +48,7 @@ export default function User({ id, nombre, rol }) {
   const saveEdit = (data) => {
     startTransition(async () => {
       try {
-        await actualizarUsuario(id, data); // { usuario, rol }
+        await actualizarUsuario(id, data);
         setShowEdit(false);
         setToast({
           open: true,
@@ -69,10 +70,15 @@ export default function User({ id, nombre, rol }) {
   };
 
   return (
-    <div>
-      <h3>Usuario: {nombre}</h3>
-      <h4>Rol: {rol}</h4>
+    <div className={style.wrapper}>
       <div>
+        {" "}
+        <h3>Usuario: {nombre}</h3>
+      </div>
+      <div>
+        <h4>Rol: {rol}</h4>
+      </div>
+      <div className={style.buttons}>
         <button disabled={pending} onClick={() => setShowEdit(true)}>
           {pending && showEdit ? "Guardando..." : "Actualizar"}
         </button>
@@ -80,7 +86,6 @@ export default function User({ id, nombre, rol }) {
           {pending && showDelete ? "Eliminando..." : "Eliminar"}
         </button>
       </div>
-
       <ConfirmDialog
         open={showDelete}
         title="Confirmar eliminación"
@@ -88,8 +93,9 @@ export default function User({ id, nombre, rol }) {
         pending={pending}
         onCancel={() => setShowDelete(false)}
         onConfirm={confirmDelete}
+        overlayClassName={style.modalOverlay}
+        contentClassName={style.modalContent}
       />
-
       <EditUserDialog
         open={showEdit}
         initialNombre={nombre}

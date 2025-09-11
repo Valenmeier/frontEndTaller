@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import StatusToast from "@/components/dialogs/statusToast/statusToast";
+import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import styles from "./modal.module.css";
 
 const ROLES = ["ADMIN", "ENCARGADO", "CAJERO"];
 
@@ -31,6 +32,14 @@ export default function AddUserDialog({
     setContrasena(initialContrasena ?? "");
   }, [initialNombre, initialRol, initialContrasena]);
 
+  // Cerrar con ESC
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && !pending && onCancel?.();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, pending, onCancel]);
+
   if (!open) return null;
 
   const handleSave = () => {
@@ -48,56 +57,88 @@ export default function AddUserDialog({
       setToast({ open: true, type: "error", title: "Datos inválidos", message: "Rol inválido" });
       return;
     }
-
     onSave({ usuario: trimmed, contrasena: trimmedPass, rol });
   };
 
   return (
-    <div role="dialog" aria-modal="true">
-      <h4>Añadir usuario</h4>
+    <div
+      className={styles.modalOverlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-user-title"
+      onClick={() => !pending && onCancel?.()}
+    >
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <h4 id="add-user-title" className={styles.title}>Añadir usuario</h4>
 
-      <div>
-        <input
-          placeholder="Ingrese el nombre del usuario"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          disabled={pending}
-        />
+        <form
+          className={styles.form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!pending) handleSave();
+          }}
+        >
+          <label className={styles.field}>
+            <span>Nombre: </span>
+            <input
+              className={styles.input}
+              placeholder="Ingrese el nombre del usuario"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              disabled={pending}
+              autoFocus
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span>Contraseña: </span>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="Ingrese la contraseña"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              disabled={pending}
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span>Rol:</span>
+            <div className={styles.selectWrapper}>
+              <select
+                className={styles.select}
+                value={rol}
+                onChange={(e) => setRol(e.target.value)}
+                disabled={pending}
+              >
+                {ROLES.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+          </label>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.btnCancel}
+              disabled={pending}
+              onClick={onCancel}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className={styles.btnConfirm}
+              disabled={pending}
+            >
+              {pending ? "Guardando..." : "Guardar cambios"}
+            </button>
+          </div>
+        </form>
+
+        <StatusToast {...toast} onClose={closeToast} />
       </div>
-
-      <div>
-        <input
-          type="password"
-          placeholder="Ingrese la contraseña"
-          value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
-          disabled={pending}
-        />
-      </div>
-
-      <div>
-        <label>
-          Rol:
-          <select
-            value={rol}
-            onChange={(e) => setRol(e.target.value)}
-            disabled={pending}
-          >
-            {ROLES.map((r) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div>
-        <button disabled={pending} onClick={onCancel}>Cancelar</button>
-        <button disabled={pending} onClick={handleSave}>
-          {pending ? "Guardando..." : "Guardar cambios"}
-        </button>
-      </div>
-
-      <StatusToast {...toast} onClose={closeToast} />
     </div>
   );
 }

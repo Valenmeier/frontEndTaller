@@ -1,7 +1,7 @@
-import validarToken from "@/security/validarToken";
-import TokenAutoLogout from "@/hooks/TokenLogout";
-import { getTicket } from "@/components/Ticket/actions";
-import TicketClient from "@/components/Ticket/TicketClient";
+import validarToken from "@/security/validarToken.js";
+import TokenAutoLogout from "@/hooks/TokenLogout.js";
+import { getTicket } from "@/components/Ticket/actions.js";
+import TicketClient from "@/components/Ticket/TicketClient.js";
 
 export default async function Page({ params: paramsPromise }) {
   const { ok, payload, exp } = await validarToken();

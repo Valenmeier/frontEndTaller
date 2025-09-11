@@ -1,4 +1,4 @@
-import VppPage from "@/components/VPP/VppPage";
+import VppPage from "@/components/VPP/VppPage.js";
 
 export const metadata = {
   title: "TP Taller-Vpp",

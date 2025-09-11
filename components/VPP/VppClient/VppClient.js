@@ -2,11 +2,14 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { crearProceso } from "../actions";
-import StatusToast from "@/components/dialogs/statusToast/statusToast";
+import { crearProceso } from "../actions.js";
+import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import LogoutButton from "@/components/Buttons/Logout.js";
+import Link from "next/link";
+import styles from "./vppClient.module.css";
 
 const SECCIONES = [
-  "TODAS",
+  "Todas",
   "CARNES",
   "FRUTAS",
   "VERDURAS",
@@ -17,13 +20,14 @@ const SECCIONES = [
 export default function VppClient({
   initialProductos = [],
   cajeroONombreEncargado = "",
+  payload,
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
   const [toast, setToast] = useState({
     open: false,
-    type: "info", 
+    type: "info",
     title: "",
     message: "",
   });
@@ -31,8 +35,7 @@ export default function VppClient({
   const showToast = (type, title, message) =>
     setToast({ open: true, type, title, message });
 
-
-  const [seccion, setSeccion] = useState("TODAS");
+  const [seccion, setSeccion] = useState("Todas");
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState(null);
   const [pesoStr, setPesoStr] = useState("");
@@ -46,7 +49,7 @@ export default function VppClient({
     const query = q.trim().toLowerCase();
     return (initialProductos || [])
       .filter((p) =>
-        seccion === "TODAS" ? true : (p.seccion || "").toUpperCase() === seccion
+        seccion === "Todas" ? true : (p.seccion || "").toUpperCase() === seccion
       )
       .filter((p) =>
         query ? (p.nombre || "").toLowerCase().includes(query) : true
@@ -84,6 +87,10 @@ export default function VppClient({
             3
           )} kg)`
         );
+
+        if (created?.id) {
+          window.open(`/ticket/${created.nroProceso}`, "_blank");
+        }
       } catch (e) {
         showToast(
           "error",
@@ -95,65 +102,79 @@ export default function VppClient({
   };
 
   return (
-    <>
-      {/* Filtros */}
-      <div>
-        <select value={seccion} onChange={(e) => setSeccion(e.target.value)}>
-          {SECCIONES.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-        <input
-          placeholder="Buscar producto"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
-      </div>
-
-      {/* Lista */}
-      <div>
-        {productos.length === 0 ? (
-          <p>No hay productos</p>
-        ) : (
-          <ul>
-            {productos.map((p) => (
-              <li key={p.id}>
-                <button onClick={() => setSelected(p)}>
-                  {p.nombre} — ${p.precioKg}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Panel derecho */}
-      <div>
-        <h3>Producto: {selected ? selected.nombre : "-"}</h3>
-        <p>Precio/KG: {selected ? `$${selected.precioKg}` : "-"}</p>
-
-        <label>
-          Peso (kg):
+    <div className={styles.wrapper}>
+      <div className={styles.panelIzquierdo}>
+        <div className={styles.filtros}>
           <input
-            inputMode="decimal"
-            placeholder="0.000"
-            value={pesoStr}
-            onChange={(e) => setPesoStr(e.target.value)}
-            disabled={!selected || pending}
+            placeholder="Buscar producto  🔎︎"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
           />
-        </label>
+          <div>
+            <select
+              className={styles.select}
+              value={seccion}
+              onChange={(e) => setSeccion(e.target.value)}
+            >
+              {SECCIONES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-        <h3>Precio total: ${total.toFixed(2)}</h3>
+        <div className={styles.lista}>
+          {productos.length === 0 ? (
+            <p>No hay productos</p>
+          ) : (
+            <>
+              {productos.map((p) => (
+                <button key={p.id} onClick={() => setSelected(p)}>
+                  <p>Producto: {p.nombre}</p> <p>Precio *kg: ${p.precioKg}</p>
+                </button>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
 
-        <button disabled={!canCreate || pending} onClick={onCreate}>
+      <div className={styles.panelDerecho}>
+        <Link href="/procesos">⟳ Ver procesos </Link>
+        <h4> Producto: </h4>
+        <h2> {selected ? selected.nombre : "-"}</h2>
+
+        <h4>Peso:</h4>
+
+        <input
+          type="number"
+          inputMode="decimal"
+          placeholder="0"
+          min={0}
+          value={pesoStr}
+          onChange={(e) => setPesoStr(e.target.value)}
+          disabled={!selected || pending}
+        />
+
+        <h4>Precio total:</h4>
+        <h2 className={styles.precioTotal}> ${total.toFixed(2)}</h2>
+
+        <button
+          className={`${styles.boton} ${
+            canCreate ? styles.botonActivo : styles.botonInactivo
+          }`}
+          disabled={!canCreate || pending}
+          onClick={onCreate}
+        >
           {pending ? "Creando..." : "Imprimir ticket"}
+          <a href=""></a>
         </button>
+        <LogoutButton nombre={payload.user} />
       </div>
 
       {/* TOAST */}
       <StatusToast {...toast} onClose={closeToast} />
-    </>
+    </div>
   );
 }

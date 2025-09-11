@@ -4,7 +4,9 @@
   box-sizing: border-box;
 }
 :root {
-  --gradienteTexto: linear-gradient(to right, #3128b4, #4668b1);
+  --gradienteTexto: linear-gradient(to right, #4668b1, #3128b4);
+  --gradienteCancelar:  linear-gradient(to right, #ff4d4d, #cc0000);
+  --gradienteConfirmar: linear-gradient(135deg, #4caf50, #087f23); 
   --colorFondo: #f6f6f6;
 }
 
@@ -12,6 +14,7 @@ html,
 body {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -52,4 +55,15 @@ a {
   background: var(--gradienteTexto);
   background-clip: text;
   color: transparent;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }

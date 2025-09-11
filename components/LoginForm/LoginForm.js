@@ -3,9 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import loginActions from "./actions";
+import loginActions from "./actions.js";
 import styles from "./loginPage.module.css";
-import StatusToast from "@/components/dialogs/statusToast/statusToast"; 
+import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import PollRefresher from "../refreshers/PollRefresher.js";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function LoginForm() {
     title: "",
     message: "",
   });
-  const closeToast = () => setToast(t => ({ ...t, open: false }));
+  const closeToast = () => setToast((t) => ({ ...t, open: false }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,6 +70,7 @@ export default function LoginForm() {
 
   return (
     <>
+     <PollRefresher intervalMs={6000} />
       <form onSubmit={handleSubmit} className={styles.form}>
         <Image
           src="/logodelplata.png"
@@ -99,7 +101,7 @@ export default function LoginForm() {
           </label>
         </div>
 
-        <button type="submit" disabled={pending}>
+        <button className={styles.button} type="submit" disabled={pending}>
           {pending ? "Ingresando..." : "Ingresar"}
         </button>
       </form>

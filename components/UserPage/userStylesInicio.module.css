@@ -1,0 +1,15 @@
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1vw;
+  width: 100%;
+}
+
+.headerContainer a{
+  width: 10vw;
+}
+.headerContainer a:hover {
+  opacity: 0.8;
+  transition: .4;
+}

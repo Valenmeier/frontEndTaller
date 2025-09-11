@@ -1,5 +1,6 @@
-// components/Ticket/TicketClient.jsx  (Client Component)
 "use client";
+import styles from "./TicketStyles.module.css";
+import Image from "next/image";
 
 export default function TicketClient({ ticket, usuario }) {
   const {
@@ -18,22 +19,48 @@ export default function TicketClient({ ticket, usuario }) {
     const iso = fecha.includes(" ") ? fecha.replace(" ", "T") : fecha;
     const d = new Date(iso);
     if (isNaN(d.getTime())) return fecha;
-    return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
   })();
 
-  const estadoLabel = ({ PROCESANDO: "en proceso", CANCELADO: "Cancelado", FINALIZADO: "Pagado" }[estado] || estado);
+  const estadoLabel =
+    { PROCESANDO: "en proceso", CANCELADO: "Cancelado", FINALIZADO: "Pagado" }[
+      estado
+    ] || estado;
 
   return (
-    <div>
-      <div><strong>Nro. de Proceso:</strong> {nroProceso}</div>
-      <div><strong>Fecha:</strong> {fechaFmt}</div>
-      <div><strong>Producto:</strong> {productoNombre}{productoSeccion ? ` (${productoSeccion})` : ""}</div>
-      <div><strong>Precio*kg:</strong> ${Number(precioUnitario ?? 0).toFixed(2)}</div>
-      <div><strong>Peso:</strong> {Number(pesoKg ?? 0).toFixed(3)} kg</div>
-      <div><strong>Total:</strong> ${Number(importeTotal ?? 0).toFixed(2)}</div>
-      <div><strong>Estado:</strong> {estadoLabel}</div>
-      <div style={{ marginTop: 12 }}>
+    <div className={styles.container}>
+      <Image src="/logodelplata.png" alt="logo" width={250} height={70} />
+      <div>
+        <strong>Nro. de Proceso:</strong> {nroProceso}
       </div>
+      <div>
+        <strong>Fecha:</strong> {fechaFmt}
+      </div>
+      <div>
+        <strong>Producto:</strong> {productoNombre}
+        {productoSeccion ? ` (${productoSeccion})` : ""}
+      </div>
+      <div>
+        <strong>Precio*kg:</strong> ${Number(precioUnitario ?? 0).toFixed(2)}
+      </div>
+      <div>
+        <strong>Peso:</strong>{" "}
+        {Number(pesoKg ?? 0)
+          .toFixed(3)
+          .replace(".", ",")}{" "}
+        kg
+      </div>
+
+      <div>
+        <strong>Total:</strong> ${Number(importeTotal ?? 0).toFixed(2)}
+      </div>
+      <div>
+        <strong>Estado:</strong> {estadoLabel}
+      </div>
+      <div style={{ marginTop: 12 }}></div>
     </div>
   );
 }

@@ -1,0 +1,68 @@
+
+.container {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;       
+  justify-content: center;   
+  padding: 1rem;
+  backdrop-filter: blur(1px);
+  outline: none;
+  z-index: 9999;
+}
+
+.dialog {
+  background: var(--colorFondo);
+  padding: 2vw;
+  border-radius: 1vw;
+  min-width: 25%;
+  min-height: 15%;
+  max-width: 90%;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  gap: 1vw;
+}
+.dialog h4 {
+  font-size: 1.953rem;
+}
+.dialog p {
+  font-size: 1.562rem;
+}
+
+.dialog button {
+  width: 11vw;
+  height: 2.2vw;
+  font-size: 1rem;
+  border-radius: 5vw;
+  border: none;
+  cursor: pointer;
+}
+.dialog button:first-child {
+  background: var(--gradienteCancelar); 
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.dialog button:last-child {
+  background: var(--gradienteConfirmar);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.dialog button:hover {
+  opacity: 0.85;
+}
+
+.buttons {
+  display: flex;
+  width: 100%;
+  gap: 2vw;
+  justify-content: space-around;
+}

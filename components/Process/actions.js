@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 const BASE = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_DB_URL || "";
@@ -9,7 +10,6 @@ async function authHeader() {
   if (!token) throw new Error("No autenticado");
   return { Authorization: `Bearer ${token}` };
 }
-
 
 export async function getProcesosAll() {
   const headers = await authHeader();
@@ -21,24 +21,39 @@ export async function getProcesosAll() {
   return res.json();
 }
 
-
 export async function confirmarProceso(nro) {
   const headers = await authHeader();
-  const res = await fetch(`${BASE}/procesos/${nro}/confirm`, { method: "PUT", headers });
-  if (!res.ok) throw new Error(await res.text().catch(() => "No se pudo confirmar"));
+  const res = await fetch(`${BASE}/procesos/${nro}/confirm`, {
+    method: "PUT",
+    headers,
+  });
+  if (!res.ok)
+    throw new Error(await res.text().catch(() => "No se pudo confirmar"));
+  revalidateTag("procesos");
   return res.json().catch(() => ({}));
 }
 
 export async function cancelarProceso(nro) {
   const headers = await authHeader();
-  const res = await fetch(`${BASE}/procesos/${nro}/cancel`, { method: "PUT", headers });
-  if (!res.ok) throw new Error(await res.text().catch(() => "No se pudo cancelar"));
+  const res = await fetch(`${BASE}/procesos/${nro}/cancel`, {
+    method: "PUT",
+    headers,
+  });
+  if (!res.ok)
+    throw new Error(await res.text().catch(() => "No se pudo cancelar"));
+  revalidateTag("procesos");
   return res.json().catch(() => ({}));
 }
 
 export async function getTicket(nro) {
   const headers = await authHeader();
-  const res = await fetch(`${BASE}/procesos/${nro}`, { headers, cache: "no-store" });
-  if (!res.ok) throw new Error(await res.text().catch(() => "No se pudo obtener el ticket"));
+  const res = await fetch(`${BASE}/procesos/${nro}`, {
+    headers,
+    cache: "no-store",
+  });
+  if (!res.ok)
+    throw new Error(
+      await res.text().catch(() => "No se pudo obtener el ticket")
+    );
   return res.json();
 }

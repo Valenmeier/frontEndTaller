@@ -1,9 +1,10 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { crearProducto } from "../actions";
-import AddProductDialog from "../dialogs/addProductDialog";
-import StatusToast from "@/components/dialogs/statusToast/statusToast";
+import { crearProducto } from "../actions.js";
+import AddProductDialog from "../dialogs/addProductDialog.js";
+import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import styles from "../dialogs/modal.module.css";
 
 export default function AddProductButton() {
   const router = useRouter();
@@ -44,7 +45,11 @@ export default function AddProductButton() {
 
   return (
     <>
-      <button disabled={pending} onClick={() => setOpen(true)}>
+      <button
+        className={styles.addUserFab}
+        disabled={pending}
+        onClick={() => setOpen(true)}
+      >
         {pending ? "Agregando..." : "Agregar Producto"}
       </button>
 

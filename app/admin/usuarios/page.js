@@ -1,4 +1,4 @@
-import UserPage from "@/components/UserPage/UserPage";
+import UserPage from "@/components/UserPage/UserPage.js";
 
 export const metadata = {
   title: "Del Plata - Usuarios",

@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-import StatusToast from "@/components/dialogs/statusToast/statusToast";
+import { useEffect, useState, useRef } from "react";
+import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import style from "./editProduct.module.css";
 
 const SECCIONES = ["CARNES", "FRUTAS", "VERDURAS", "FIAMBRES", "PANADERIA"];
 
@@ -23,12 +24,23 @@ export default function EditProductDialog({
     title: "Datos inválidos",
     message: "",
   });
-  const closeToast = () => setToast((t) => ({ ...t, open: false }));
+
+  const inputRef = useRef(null);
 
   useEffect(() => {
     setNombre(initialNombre ?? "");
     setSeccion(initialSeccion ?? "CARNES");
   }, [initialNombre, initialSeccion]);
+
+  useEffect(() => {
+    if (!open) return;
+    inputRef.current?.focus();
+    const onKey = (e) => e.key === "Escape" && onCancel?.();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onCancel]);
+
+  const closeToast = () => setToast((t) => ({ ...t, open: false }));
 
   if (!open) return null;
 
@@ -66,55 +78,79 @@ export default function EditProductDialog({
   };
 
   return (
-    <div seccion="dialog" aria-modal="true">
-      <h4>Editar usuario</h4>
+    <div
+      className={style.modalOverlay}
+      onMouseDown={(e) => e.target === e.currentTarget && onCancel?.()}
+    >
+      <div
+        className={style.modalContent}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-user-title"
+      >
+        <h4 id="edit-user-title" className={style.title}>
+          Editar producto
+        </h4>
 
-      <div>
-        <label>
-          Nombre:
-          <input
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+        <div className={style.form}>
+          <label className={style.field}>
+            <span>Producto</span>
+            <input
+              ref={inputRef}
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              disabled={pending}
+              className={style.input}
+              placeholder="Nombre del producto"
+            />
+          </label>
+          <label className={style.field}>
+            <span>Precio</span>
+            <input
+              ref={inputRef}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              disabled={pending}
+              className={style.input}
+              placeholder="Precio del producto"
+            />
+          </label>
+
+          <label className={style.field}>
+            <span>Seccion</span>
+            <div className={style.selectWrapper}>
+              <select
+                value={seccion}
+                onChange={(e) => setSeccion(e.target.value)}
+                disabled={pending}
+                className={style.select}
+              >
+                {SECCIONES.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <div className={style.actions}>
+          <button
+            className={style.btnCancel}
             disabled={pending}
-            placeholder="ingrese el nuevo nombre"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Precio:
-          <input
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            disabled={pending}
-            placeholder="ingrese el nuevo precio"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Seccion:
-          <select
-            value={seccion}
-            onChange={(e) => setSeccion(e.target.value)}
-            disabled={pending}
+            onClick={onCancel}
           >
-            {SECCIONES.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div>
-        <button disabled={pending} onClick={onCancel}>
-          Cancelar
-        </button>
-        <button disabled={pending} onClick={handleSave}>
-          {pending ? "Guardando..." : "Guardar cambios"}
-        </button>
+            Cancelar
+          </button>
+          <button
+            className={style.btnConfirm}
+            disabled={pending}
+            onClick={handleSave}
+          >
+            {pending ? "Guardando..." : "Guardar cambios"}
+          </button>
+        </div>
       </div>
 
       <StatusToast {...toast} onClose={closeToast} />

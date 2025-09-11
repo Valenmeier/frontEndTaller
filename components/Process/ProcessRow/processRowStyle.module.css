@@ -1,0 +1,67 @@
+.wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  width: 95vw;
+  margin: 1rem auto;
+  padding: 0.75rem 1rem;
+  background: #f3f3f3;
+  border: 3px solid transparent;
+  border-image: var(--gradienteTexto) 1;
+  border-radius: 9999px;
+  box-sizing: border-box;
+}
+
+.wrapper > div {
+  flex: 1 1 0;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+}
+
+.buttons {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.75rem;
+  padding-left: 0;
+}
+
+.buttons button {
+  min-width: 9rem;
+  height: 2.5rem;
+  padding: 0 0.9rem;
+  border-radius: 9999px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.buttons button a {
+  color: #fff;
+}
+
+.buttons button:first-child {
+  background: var(--gradienteTexto);
+  color: #fff;
+}
+.buttons button:nth-child(2){
+  background: var(--gradienteConfirmar);
+  color: #fff;
+}
+.buttons button:last-child {
+  background: var(--gradienteCancelar);
+  color: #fff;
+}
+.buttons button:disabled {
+  cursor: default;
+    background: none;
+  color: #a0a0a0;
+}
+.buttons button:last-child:disabled {
+  cursor: default;
+  background: none;
+  color: #a0a0a0;
+}

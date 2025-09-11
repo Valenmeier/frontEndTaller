@@ -17,13 +17,11 @@ export async function crearProceso({ productoId, pesoKg }) {
     method: "POST",
     headers: { ...headers, "Content-Type": "application/json" },
     body: JSON.stringify({ productoId, pesoKg }),
-    cache: "no-store",
   });
   if (!res.ok) {
     const msg = await res.text().catch(() => "");
     throw new Error(msg || "No se pudo crear el proceso");
   }
-  // Si tenés caché/tag para procesos:
-  try { revalidateTag("procesos"); } catch (_) {}
-  return res.json(); 
+  revalidateTag("procesos");
+  return res.json();
 }

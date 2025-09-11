@@ -1,26 +1,30 @@
-import TokenAutoLogout from "@/hooks/TokenLogout";
-import validarToken from "../../security/validarToken";
-import { getProductos } from "./actions";
-import LogoutButton from "../Buttons/Logout";
-import ProductsClient from "./ProductClient/ProductClient";
+import TokenAutoLogout from "@/hooks/TokenLogout.js";
+import validarToken from "../../security/validarToken.js";
+import { getProductos } from "./actions.js";
+import LogoutButton from "../Buttons/Logout.js";
+import ProductsClient from "./ProductClient/ProductClient.js";
 import Link from "next/link";
+import styles from "./productStylesInicio.module.css";
+import Image from "next/image";
+import PollRefresher from "../refreshers/PollRefresher.js";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function ProductPage() {
   const { ok, payload, exp } = await validarToken();
   if (!ok || payload.rol !== "ADMIN") return <h1>No autorizado</h1>;
 
-  // Traemos TODO una sola vez (sin filtros de back)
   const productos = await getProductos();
 
   return (
     <>
+      <PollRefresher intervalMs={6000} />
       <TokenAutoLogout exp={exp} />
-      <h1>Productos</h1>
-      <Link href="/admin/usuarios">Ir a usuarios</Link>
-      <LogoutButton nombre={payload.user} />
-
+      <section className={styles.headerContainer}>
+        <Image src="/logodelplata.png" alt="logo" width={250} height={70} />
+        <LogoutButton nombre={payload.user} />
+        <Link href="/admin/usuarios">Ir a usuarios ➤</Link>
+      </section>
       <ProductsClient initialProductos={productos} />
     </>
   );

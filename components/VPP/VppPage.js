@@ -1,11 +1,9 @@
-import TokenAutoLogout from "@/hooks/TokenLogout";
-import validarToken from "@/security/validarToken";
-import { getProductos } from "../ProductPage/actions";
-import LogoutButton from "../Buttons/Logout";
-import VppClient from "./VppClient/VppClient";
-import Link from "next/link";
+import TokenAutoLogout from "@/hooks/TokenLogout.js";
+import validarToken from "@/security/validarToken.js";
+import { getProductos } from "../ProductPage/actions.js";
+import VppClient from "./VppClient/VppClient.js";
+import PollRefresher from "../refreshers/PollRefresher.js";
 
-export const dynamic = "force-dynamic";
 
 export default async function VppPage() {
   const { ok, payload, exp } = await validarToken();
@@ -15,11 +13,13 @@ export default async function VppPage() {
 
   return (
     <>
+      <PollRefresher intervalMs={6000} />
       <TokenAutoLogout exp={exp} />
-      <h1>VPP</h1>
-      <Link href="/procesos">Ir a procesos</Link>
-      <LogoutButton nombre={payload.user} />
-      <VppClient initialProductos={productos} cajeroONombreEncargado={payload.user} />
+      <VppClient
+        payload={payload}
+        initialProductos={productos}
+        cajeroONombreEncargado={payload.user}
+      />
     </>
   );
 }

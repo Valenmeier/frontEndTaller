@@ -1,4 +1,4 @@
-import ProductPage from "@/components/ProductPage/ProductPage";
+import ProductPage from "@/components/ProductPage/ProductPage.js";
 export const metadata = {
   title: "TP Taller-productos",
   description: "Sistema Del Plata, login para manipular productos",

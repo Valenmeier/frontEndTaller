@@ -1,11 +1,14 @@
 import TokenAutoLogout from "@/hooks/TokenLogout";
-import validarToken from "../../security/validarToken";
-import { getUsuarios } from "./actions";
-import LogoutButton from "../Buttons/Logout";
-import UsersClient from "./UserClient/UserClient";
+import validarToken from "../../security/validarToken.js";
+import { getUsuarios } from "./actions.js";
+import LogoutButton from "../Buttons/Logout.js";
+import UsersClient from "./UserClient/UserClient.js";
 import Link from "next/link";
+import styles from "./userStylesInicio.module.css";
+import Image from "next/image";
+import PollRefresher from "../refreshers/PollRefresher.js";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function UserPage() {
   const { ok, payload, exp } = await validarToken();
@@ -15,10 +18,13 @@ export default async function UserPage() {
 
   return (
     <>
+      <PollRefresher intervalMs={6000} />
       <TokenAutoLogout exp={exp} />
-      <h1>Usuarios</h1>
-      <Link href="/admin/productos">Ir a productos</Link>
-      <LogoutButton nombre={payload.user} />
+      <section className={styles.headerContainer}>
+        <Image src="/logodelplata.png" alt="logo" width={250} height={70} />
+        <LogoutButton nombre={payload.user} />
+        <Link href="/admin/productos">Ir a productos ➤</Link>
+      </section>
       <UsersClient initialUsuarios={usuarios} />
     </>
   );

@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  gap: 2vw;
+  font-size: 1.953vw;
+  font-weight: 500;
+}
+.container div {
+  background: var(--gradienteTexto);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.container strong {
+     background: #000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

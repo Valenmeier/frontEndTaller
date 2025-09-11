@@ -1,11 +1,14 @@
-import validarToken from "@/security/validarToken";
-import TokenAutoLogout from "@/hooks/TokenLogout";
+import validarToken from "@/security/validarToken.js";
+import TokenAutoLogout from "@/hooks/TokenLogout.js";
 import { getProcesosAll } from "./actions";
-import ProcesosClient from "./ProcessClientes/ProcesosClientes";
-import LogoutButton from "../Buttons/Logout";
+import ProcesosClient from "./ProcessClientes/ProcesosClientes.js";
+import LogoutButton from "../Buttons/Logout.js";
 import Link from "next/link";
+import styles from "./processStylesInicio.module.css";
+import Image from "next/image";
+import PollRefresher from "../refreshers/PollRefresher.js";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function ProcesosPage() {
   const { ok, payload, exp } = await validarToken();
@@ -16,14 +19,13 @@ export default async function ProcesosPage() {
 
   return (
     <>
+      <PollRefresher ms={6000}/>
       <TokenAutoLogout exp={exp} />
-      <h1>Procesos</h1>
-       {payload.rol == "ENCARGADO" ? (
-              <Link href="/vpp">Ir a vpp</Link>
-            ) : (
-              ""
-            )}
-      <LogoutButton nombre={payload.user}></LogoutButton>
+      <section className={styles.headerContainer}>
+        <Image src="/logodelplata.png" alt="logo" width={250} height={70} />
+        {payload.rol == "ENCARGADO" ? <Link href="/vpp">Ir a vpp</Link> : ""}
+        <LogoutButton nombre={payload.user} />
+      </section>
 
       <ProcesosClient initialProcesos={procesos} rol={payload.rol} />
     </>

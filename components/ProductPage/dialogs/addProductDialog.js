@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import StatusToast from "@/components/dialogs/statusToast/statusToast";
+import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import styles from "./modal.module.css";
 
 const SECCIONES = ["CARNES", "FRUTAS", "VERDURAS", "FIAMBRES", "PANADERIA"];
 
@@ -44,7 +45,7 @@ export default function AddProductDialog({
       });
       return;
     }
-    const trimmedPrice = price
+    const trimmedPrice = price;
     if (!trimmedPrice) {
       setToast({
         open: true,
@@ -68,55 +69,88 @@ export default function AddProductDialog({
   };
 
   return (
-    <div role="dialog" aria-modal="true">
-      <h4>Añadir Producto</h4>
+    <div
+      className={styles.modalOverlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-user-title"
+      onClick={() => !pending && onCancel?.()}
+    >
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <h4 id="add-product-title" className={styles.title}>
+          Añadir Producto
+        </h4>
 
-      <div>
-        <input
-          placeholder="Ingrese el nombre del producto"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          disabled={pending}
-        />
+        <form
+          className={styles.form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!pending) handleSave();
+          }}
+        >
+          <label className={styles.field}>
+            <span>Nombre: </span>
+            <input
+              className={styles.input}
+              placeholder="Ingrese el nombre del producto"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              disabled={pending}
+              autoFocus
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span>Precio: </span>
+            <input
+              className={styles.input}
+              type="number"
+              placeholder="Ingrese el precio"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              disabled={pending}
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span>Seccion:</span>
+            <div className={styles.selectWrapper}>
+              <select
+                className={styles.select}
+                value={seccion}
+                onChange={(e) => setSeccion(e.target.value)}
+                disabled={pending}
+              >
+                {SECCIONES.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.btnCancel}
+              disabled={pending}
+              onClick={onCancel}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className={styles.btnConfirm}
+              disabled={pending}
+            >
+              {pending ? "Guardando..." : "Guardar cambios"}
+            </button>
+          </div>
+        </form>
+
+        <StatusToast {...toast} onClose={closeToast} />
       </div>
-
-      <div>
-        <input
-          type="number"
-          placeholder="Ingrese el precio"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          disabled={pending}
-        />
-      </div>
-
-      <div>
-        <label>
-          Sección:
-          <select
-            value={seccion}
-            onChange={(e) => setSeccion(e.target.value)}
-            disabled={pending}
-          >
-            {SECCIONES.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div>
-        <button disabled={pending} onClick={onCancel}>
-          Cancelar
-        </button>
-        <button disabled={pending} onClick={handleSave}>
-          {pending ? "Guardando..." : "Guardar cambios"}
-        </button>
-      </div>
-
-      <StatusToast {...toast} onClose={closeToast} />
     </div>
   );
 }

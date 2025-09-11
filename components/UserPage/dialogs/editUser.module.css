@@ -1,0 +1,141 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;       
+  justify-content: center;   
+  padding: 1rem;
+  backdrop-filter: blur(1px);
+  outline: none;
+  z-index: 9999;
+}
+
+
+.modalContent {
+  width: min(520px, 92vw);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  padding: 1rem 1.25rem;
+  border: 3px solid transparent;
+  border-image: var(--gradienteTexto) 1;
+
+  opacity: 0;
+  animation: pop 0.18s ease forwards;
+  outline: none;
+}
+@keyframes pop {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.title {
+  text-align: center;
+  margin: 0.25rem 0 1rem;
+  font-size: 1.2rem;
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.field span {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.input {
+  width: 100%;
+  height: 2.6rem;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background: #f7f7f9;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  font-size: 1rem;
+}
+.input:focus {
+  background: #fff;
+  
+}
+
+.selectWrapper {
+  position: relative;
+}
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  height: 2.6rem;
+  padding: 0 2.2rem 0 1rem;
+  border-radius: 9999px;
+  background: #f7f7f9;
+  outline: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.select:focus {
+  background: #fff;
+}
+
+.selectWrapper::after {
+  content: "▾";
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btnConfirm,
+.btnCancel {
+  min-width: 9rem;
+  height: 2.5rem;
+  padding: 0 0.9rem;
+  border-radius: 9999px;
+  border: none;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.btnConfirm {
+  background: var(--gradienteTexto);
+}
+.btnCancel {
+  background: var(--gradienteCancelar);
+}
+
+.btnConfirm:hover,
+.btnCancel:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+.btnConfirm:disabled,
+.btnCancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnConfirm:focus-visible,
+.btnCancel:focus-visible,
+.input:focus-visible,
+.select:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.45);
+  outline-offset: 2px;
+}

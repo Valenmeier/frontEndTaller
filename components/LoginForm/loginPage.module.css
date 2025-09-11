@@ -33,10 +33,26 @@
   background: linear-gradient(#fff 0 0) padding-box,
     var(--gradienteTexto) border-box;
 }
+.button {
+  background: var(--gradienteTexto) border-box;
+  color: var(--colorFondo);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  width: 30vw;
+  height: 5vw;
+  border-radius: 100vw;
+  font-size: 2.441rem;
+}
+.button:hover {
+  cursor: pointer;
+  box-shadow: .5vw .5vw .5vw rgba(0, 0, 0, .2);
+}
 
-@media (max-width: 720px)  {
-    .input{
-        height: 15vw;
-        width: 80vw;
-    }
+@media (max-width: 720px) {
+  .input {
+    height: 15vw;
+    width: 80vw;
+  }
 }

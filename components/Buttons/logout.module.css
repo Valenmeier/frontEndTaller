@@ -1,0 +1,15 @@
+.logoutContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 8vw;
+  gap: 0.5vw;
+}
+.logoutContainer h3 {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.logoutContainer img {
+  cursor: pointer;
+}

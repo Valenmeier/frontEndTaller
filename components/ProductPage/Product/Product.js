@@ -5,6 +5,7 @@ import { eliminarProducto, actualizarProducto } from "../actions.js";
 import ConfirmDialog from "@/components/dialogs/confirmDialog/confirmDialog.js";
 import EditProductDialog from "../dialogs/editProductDialog.js";
 import StatusToast from "@/components/dialogs/statusToast/statusToast.js";
+import styles from "./productStyle.module.css";
 
 export default function Product({ id, nombre, price, seccion }) {
   const router = useRouter();
@@ -12,7 +13,12 @@ export default function Product({ id, nombre, price, seccion }) {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
-  const [toast, setToast] = useState({ open: false, type: "info", title: "", message: "" });
+  const [toast, setToast] = useState({
+    open: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
   const closeToast = () => setToast((t) => ({ ...t, open: false }));
 
   const confirmDelete = () => {
@@ -20,7 +26,12 @@ export default function Product({ id, nombre, price, seccion }) {
       try {
         await eliminarProducto(id);
         setShowDelete(false);
-        setToast({ open: true, type: "success", title: "Desactivado", message: `Se desactivó ${nombre}` });
+        setToast({
+          open: true,
+          type: "success",
+          title: "Desactivado",
+          message: `Se desactivó ${nombre}`,
+        });
         router.refresh();
       } catch (e) {
         console.error(e);
@@ -35,21 +46,37 @@ export default function Product({ id, nombre, price, seccion }) {
       try {
         await actualizarProducto(id, data);
         setShowEdit(false);
-        setToast({ open: true, type: "success", title: "Guardado", message: `Se actualizó: ${data.nombre}` });
+        setToast({
+          open: true,
+          type: "success",
+          title: "Guardado",
+          message: `Se actualizó: ${data.nombre}`,
+        });
         router.refresh();
       } catch (e) {
         console.error(e);
-        setToast({ open: true, type: "error", title: "Error", message: e?.message || "No se pudo actualizar" });
+        setToast({
+          open: true,
+          type: "error",
+          title: "Error",
+          message: e?.message || "No se pudo actualizar",
+        });
       }
     });
   };
 
   return (
-    <div>
-      <h3>Producto: {nombre}</h3>
-      <h4>Precio: {price}</h4>
-      <h4>Sección: {seccion}</h4>
+    <div className={styles.wrapper}>
       <div>
+        <h3>Producto: {nombre}</h3>
+      </div>
+      <div>
+        <h4>Precio: {price}</h4>
+      </div>
+      <div>
+        <h4>Sección: {seccion}</h4>
+      </div>
+      <div className={styles.buttons}>
         <button disabled={pending} onClick={() => setShowEdit(true)}>
           {pending && showEdit ? "Guardando..." : "Actualizar"}
         </button>
